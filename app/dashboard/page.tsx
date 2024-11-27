@@ -241,7 +241,7 @@ export default function CoffeeRecommendation() {
                     </div>
                     <div style={{ ["width"]: "250px" }}>
                       <Image
-                        src={'https://wiley-my.sharepoint.com/personal/vpamugodar_wiley_com/Documents/Hackathon%20Images/coffee_cup_01.gif'}
+                        src={'https://i.ibb.co/0Fg1YrT/coffee-cup-01.gif'}
                         layout={'responsive'}
                         height={250}
                         width={250}

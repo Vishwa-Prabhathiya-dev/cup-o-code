@@ -57,7 +57,7 @@ export default function Login() {
         <>
             <div className="flex justify-center p-4 lg:hidden">
                 <Image
-                    src="https://wiley-my.sharepoint.com/personal/vpamugodar_wiley_com/Documents/Hackathon%20Images/logo.png"
+                    src="https://i.ibb.co/Y03pxkh/logo.png"
                     alt="Brew Your Mood"
                     width={100}
                     height={100}
@@ -67,7 +67,7 @@ export default function Login() {
             <div className="flex min-h-screen flex-col lg:flex-row">
                 <div className="relative hidden w-full lg:block lg:w-1/2">
                     <Image
-                        src="https://wiley-my.sharepoint.com/personal/vpamugodar_wiley_com/Documents/Hackathon%20Images/banner.jpg"
+                        src="https://i.ibb.co/CHrtGDt/banner.png"
                         alt="Website Banner"
                         width={1120}
                         height={1120}
