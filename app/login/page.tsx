@@ -7,6 +7,8 @@ import LoadingScreen from '../../components/loading-screen'
 import { useRouter } from 'next/navigation'
 import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link'
+import Image from 'next/image'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Login() {
     const router = useRouter()
@@ -25,17 +27,17 @@ export default function Login() {
         e.preventDefault();
         setIsLoading(true)
         try {
-        const res = await signIn('credentials', {
-            email,
-            redirect: false,
-        });
+            const res = await signIn('credentials', {
+                email,
+                redirect: false,
+            });
 
-        if (res?.error) {
-            console.log('An error occurred when login: ', res.error);
-            setError('Invalid credentials. Please try again.');
-        } else {
-            router.push('/dashboard')
-        }
+            if (res?.error) {
+                console.log('An error occurred when login: ', res.error);
+                setError('Invalid credentials. Please try again.');
+            } else {
+                router.push('/dashboard')
+            }
         } catch (error) {
             console.error('An error occurred: ' + error);
         }
@@ -52,39 +54,68 @@ export default function Login() {
     }
     
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center p-24">
-            <h1 className="text-4xl font-bold mb-8">Coffee Mood</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <Input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    required
-                    className="w-full"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    />
+        <>
+            <div className="flex justify-center p-4 lg:hidden">
+                <Image
+                    src="https://wiley-my.sharepoint.com/personal/vpamugodar_wiley_com/Documents/Hackathon%20Images/logo.png"
+                    alt="Brew Your Mood"
+                    width={100}
+                    height={100}
+                    className="h-16 w-auto"
+                    unoptimized={true} />
+            </div>
+            <div className="flex min-h-screen flex-col lg:flex-row">
+                <div className="relative hidden w-full lg:block lg:w-1/2">
+                    <Image
+                        src="https://wiley-my.sharepoint.com/personal/vpamugodar_wiley_com/Documents/Hackathon%20Images/banner.jpg"
+                        alt="Website Banner"
+                        width={1120}
+                        height={1120}
+                        unoptimized={true}
+                        className="h-full w-full object-cover" />
+                </div>
+                <div className="flex items-center justify-center p-6 lg:p-8 lg:flex-1">
+                    <Card className="w-full max-w-md">
+                        <CardHeader>
+                            <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <Input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Email"
+                                    required
+                                    className="w-full"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)} />
+                                </div>
+                                {
+                                    error && (
+                                        <p className="text-red-500 text-sm">{error}</p>
+                                    )
+                                }
+                                <Button type="submit" className="w-full" disabled={isLoading}>Login</Button>
+                            </form>
+                        </CardContent>
+                        <CardFooter>
+                            <p className="mt-4 text-center">
+                                Don't have an account?{' '}
+                                <Link href="/signup" className="text-blue-500 hover:underline">Sign up</Link>
+                            </p>
+                        </CardFooter>
+                    </Card>
                 </div>
                 {
-                    error && (
-                    <p className="text-red-500 text-sm">{error}</p>
-                    )
-                }
-                <Button type="submit" className="w-full" disabled={isLoading}>Login</Button>
-                {
                     isLoading && (
-                    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm">
-                        <LoadingScreen text="Loading..." size="medium" />
-                    </div>
+                        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm">
+                            <LoadingScreen text="Loading..." size="medium" />
+                        </div>
                     )
                 }
-            </form>
-            <p className="mt-4 text-center">
-                Don't have an account?{' '}
-                <Link href="/signup" className="text-blue-500 hover:underline">Sign up</Link>
-            </p>
-        </main>
+            </div>
+        </>
     )
 }
 

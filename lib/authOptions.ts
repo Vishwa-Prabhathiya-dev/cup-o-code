@@ -8,7 +8,6 @@ declare module 'next-auth' {
       id: string;
       name?: string | null;
       email?: string | null;
-      image?: string | null;
     };
   }
 }
@@ -37,7 +36,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user._id.toString(),
           email: user.email,
-          name: user.name,
+          name: user.name
         };
       }
     })
@@ -54,8 +53,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
         if (session.user) {
-            session.user.id = token.id as string;
-        }
+          session.user.id = token.id as string;
+      }
       return session;
     },
   },

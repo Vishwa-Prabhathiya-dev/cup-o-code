@@ -1,17 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useToast } from "@/hooks/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import LoadingScreen from './loading-screen'
-import { useRouter } from 'next/navigation'
-import { registerUser } from '../app/actions'
 import Rating from '@mui/material/Rating';
 import CoffeeIcon from '@mui/icons-material/Coffee';
 import CoffeeOutlinedIcon from '@mui/icons-material/CoffeeOutlined';
 import { styled } from '@mui/material/styles';
+import { updateUser } from '../app/actions'
 
 const StyledRating = styled(Rating)({
   '& .MuiRating-iconFilled': {
@@ -22,31 +22,31 @@ const StyledRating = styled(Rating)({
   },
 });
 
-export default function SignupForm() {
-  const router = useRouter()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [birthYear, setBirthYear] = useState('')
-  const [gender, setGender] = useState('')
-  const [lowCalorie, setLowCalorie] = useState('');
-  const [coffeeLevel, setCoffeeLevel] = useState(2);
+export function ProfileForm({ name, email, birthYear, gender, lowCalorie, coffeeLevel }: { name: string; email: string; birthYear: number; gender: string; lowCalorie: string; coffeeLevel: number; }) {
+  const { toast } = useToast()
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false)
-
+  const [coffeeLevelNumber, setCoffeeLevel] = useState(coffeeLevel);
+  const [isLowCalorie, setLowCalorie] = useState(lowCalorie);
+    
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true)
     try {
-      const res = await registerUser(name, email, birthYear, gender, lowCalorie, coffeeLevel);
+      const res = await updateUser(email, isLowCalorie, coffeeLevelNumber);
       if (res?.error) {
-        console.log('An error occurred when inserting user: ' + res.error);
+        console.log('An error occurred when updating: ' + res.error);
         setError(res.error as string);
-      } else {
-        router.push('/login')
+      }
+      else {
+        toast({
+          title: "Profile updated",
+          description: "Your profile details have been saved.",
+          })
       }
     } catch (error) {
       console.error('An error occurred: ' + error);
-      setError('An error occurred during registration')
+      setError('An error occurred during updating the user.')
     }
     finally {
       setIsLoading(false)
@@ -59,41 +59,37 @@ export default function SignupForm() {
         <Input
           type="text"
           name="name"
-          placeholder="Name"
+          disabled
           required
           className="w-full"
           value={name}
-          onChange={(e) => setName(e.target.value)}
         />
       </div>
       <div>
         <Input
           type="email"
           name="email"
-          placeholder="Email"
+          disabled
           required
           className="w-full"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
         <Input
           type="number"
           name="birthYear"
-          placeholder="Birth Year"
+          disabled
           required
-          min="1950"
+          min="1900"
           max={new Date().getFullYear()}
           className="w-full"
           value={birthYear}
-          onChange={(e) => setBirthYear(e.target.value)}
         />
       </div>
       <div>
-        <Select name="gender" required
+        <Select name="gender" required disabled
           value={gender}
-          onValueChange={(value) => setGender(value)}
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Gender" />
@@ -106,8 +102,9 @@ export default function SignupForm() {
         </Select>
       </div>
       <div>
+        <Label htmlFor="lowCalorie" className='mr-5 pl-2'>Low-Calorie Diet?</Label>
         <Select name="lowCalorie" required
-          value={lowCalorie}
+          value={isLowCalorie}
           onValueChange={(value) => setLowCalorie(value)}
         >
           <SelectTrigger className="w-full">
@@ -129,7 +126,7 @@ export default function SignupForm() {
           precision={1}
           icon={<CoffeeIcon fontSize="inherit" />}
           emptyIcon={<CoffeeOutlinedIcon fontSize="inherit" />}
-          value={coffeeLevel}
+          value={coffeeLevelNumber}
           onChange={(event, newValue) => {setCoffeeLevel(Number(newValue))}}
         />
       </div>
@@ -138,15 +135,14 @@ export default function SignupForm() {
           <p className="text-red-500 text-sm">{error}</p>
         )
       }
-      <Button type="submit" className="w-full" disabled={isLoading || !name || !email || !birthYear || !gender || !lowCalorie}>Sign up</Button>
+      <Button type="submit" className="w-full" disabled={isLoading}>Save</Button>
       {
         isLoading && (
           <div className="fixed inset-0 bg-background/80 backdrop-blur-sm">
-            <LoadingScreen text="Inserting..." size="medium" />
+            <LoadingScreen text="Saving..." size="medium" />
           </div>
         )
       }
     </form>
   )
 }
-
